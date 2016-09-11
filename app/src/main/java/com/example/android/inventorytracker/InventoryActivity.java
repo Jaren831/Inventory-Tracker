@@ -22,8 +22,10 @@ public class InventoryActivity extends AppCompatActivity {
     //Adapter for the list of items
     InventoryCursorAdapter cursorAdapter;
 
+    //Cursor that iterates through table
     private Cursor cursor;
 
+    //Dbhelper
     private InventoryDbHelper mDbhelper;
 
     //ListView for the list of items
@@ -36,9 +38,8 @@ public class InventoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inventory_list);
-        itemListView = (ListView) findViewById(R.id.inventory_list);
 
-        //Set the adapter on the ListView.
+        itemListView = (ListView) findViewById(R.id.inventory_list);
 
         //Set the TextView with id empty to an empty view.
         emptyTextView = (TextView) findViewById(R.id.empty);
@@ -59,7 +60,7 @@ public class InventoryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
-                editIntent.putExtra("id", position);
+                editIntent.putExtra("item_id", position);
                 startActivity(editIntent);
             }
         });
