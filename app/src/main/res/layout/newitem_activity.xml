@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/editNameNew"
+        android:orientation="horizontal"
+        android:layout_margin="8dp">
+        <ImageView
+            android:id="@+id/newPicture"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:textSize="20sp"
-            android:hint="enter name"/>
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:maxLines="1"/>
         <EditText
-            android:id="@+id/editPriceNew"
+            android:id="@+id/newNameText"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="40dp"
-            android:textSize="20sp"
-            android:hint="price enter"/>
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="18sp"
+            android:hint="NAME"/>
         <EditText
-            android:id="@+id/editQuantityNew"
+            android:id="@+id/newPriceText"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:textSize="20sp"
-            android:hint="enter quantity"/>
+            android:layout_weight="2"
+            android:maxLines="1"
+            android:gravity="center"
+            android:ellipsize="end"
+
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:hint="PRICE"/>
+        <EditText
+            android:id="@+id/newQuantityText"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textSize="18sp"
+            android:hint="QUANTITY"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="24dp">
-        <android.support.design.widget.FloatingActionButton
+        android:layout_gravity="center">
+        <Button
+            android:id="@+id/confirmButton"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:src="@drawable/check"
-            android:id="@+id/view"
-            android:layout_marginRight="29dp"
-            android:layout_marginEnd="29dp"/>
-        <android.support.design.widget.FloatingActionButton
+            android:layout_weight="1"
+            android:text="CONFIRM"/>
+        <Button
+            android:id="@+id/cancelButton"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:src="@drawable/close"
-            android:id="@+id/view2"/>
-
+            android:layout_weight="1"
+            android:text="CANCEL"/>
     </LinearLayout>
-
-
-</RelativeLayout>
+</FrameLayout>

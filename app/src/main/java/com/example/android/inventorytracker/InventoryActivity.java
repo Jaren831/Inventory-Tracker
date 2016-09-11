@@ -1,6 +1,5 @@
 package com.example.android.inventorytracker;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,11 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.inventorytracker.Data.InventoryContract;
 import com.example.android.inventorytracker.Data.InventoryDbHelper;
@@ -34,6 +34,8 @@ public class InventoryActivity extends AppCompatActivity {
     //Empty TextView if nothing to show
     TextView emptyTextView;
 
+    Button saleButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,9 @@ public class InventoryActivity extends AppCompatActivity {
         emptyTextView = (TextView) findViewById(R.id.empty);
         itemListView.setEmptyView(emptyTextView);
 
+        //SALE button displayed in InventoryActivity
+        saleButton = (Button) findViewById(R.id.sale_button);
+
         //Setup FAB to open editorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -55,13 +60,29 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
 
+//        saleButton.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                View parentRow = (View) v.getParent();
+//                final int position = itemListView.getPositionForView(parentRow);
+//                saleUpdate(position);
+//            }
+//        });
+
         //Setup onClickListener for when an item is clicked
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
-                editIntent.putExtra("item_id", position);
-                startActivity(editIntent);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
+                long viewId = view.getId();
+                if (viewId == R.id.sale_button) {
+                    Toast.makeText(InventoryActivity.this, "uhhh", Toast.LENGTH_SHORT).show();
+
+                    saleUpdate(position);
+                } else {
+                    Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
+                    editIntent.putExtra("item_id", position);
+                    startActivity(editIntent);
+                }
             }
         });
 
@@ -102,18 +123,13 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
     }
+    private void saleUpdate(int position) {
+        Toast.makeText(InventoryActivity.this, position, Toast.LENGTH_SHORT).show();
 
-    public void insertItem() {
-        mDbhelper = new InventoryDbHelper(this);
 
-        SQLiteDatabase db = mDbhelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME, "TEST");
-        values.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE, 100);
-        values.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, 100);
 
-        long newRowId = db.insert(InventoryContract.InventoryEntry.TABLE_NAME, null, values);
-        Log.v("InventoryActivity", "New row ID " + newRowId);
     }
+
+
 }
