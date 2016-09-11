@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,18 +17,17 @@ import android.widget.TextView;
 import com.example.android.inventorytracker.Data.InventoryContract;
 import com.example.android.inventorytracker.Data.InventoryDbHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class InventoryActivity extends AppCompatActivity {
+
+    //Adapter for the list of items
+    InventoryCursorAdapter cursorAdapter;
+
+    private Cursor cursor;
 
     private InventoryDbHelper mDbhelper;
 
-    //Adapter for the list of items
-    private InventoryAdapter mAdapter;
-
     //ListView for the list of items
-    ListView itemListView;
+    private ListView itemListView;
 
     //Empty TextView if nothing to show
     TextView emptyTextView;
@@ -35,33 +36,31 @@ public class InventoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inventory_list);
-
-        //Find a reference to the ListView in the layout.
         itemListView = (ListView) findViewById(R.id.inventory_list);
 
-        //Create a new adapter that takes an empty list of articles as input.
-        mAdapter = new InventoryAdapter(this, new ArrayList<InventoryItem>());
-
         //Set the adapter on the ListView.
-        itemListView.setAdapter(mAdapter);
 
         //Set the TextView with id empty to an empty view.
         emptyTextView = (TextView) findViewById(R.id.empty);
         itemListView.setEmptyView(emptyTextView);
 
         //Setup FAB to open editorActivity
-        
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newItemIntent = new Intent(InventoryActivity.this, NewItemActivity.class);
+                startActivity(newItemIntent);
+            }
+        });
 
         //Setup onClickListener for when an item is clicked
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //Find the item that was clicked on
-                InventoryItem currentItem = mAdapter.getItem(position);
-
-                //Create a new intent to view the EditorActivity.
-                Intent editorIntent = new Intent(InventoryActivity.this, EditorActivity.class);
-                startActivity(editorIntent);
+                Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
+                editIntent.putExtra("id", position);
+                startActivity(editIntent);
             }
         });
 
@@ -69,16 +68,10 @@ public class InventoryActivity extends AppCompatActivity {
         displayDatabaseInfo();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        displayDatabaseInfo();
-    }
-
     private void displayDatabaseInfo() {
         InventoryDbHelper mDbHelper = new InventoryDbHelper(this);
 
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         String[] project = {
             InventoryContract.InventoryEntry._ID,
@@ -87,7 +80,7 @@ public class InventoryActivity extends AppCompatActivity {
             InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY
         };
 
-        Cursor cursor = db.query(
+        cursor = db.query(
                 InventoryContract.InventoryEntry.TABLE_NAME,
                 project,
                 null,
@@ -96,30 +89,17 @@ public class InventoryActivity extends AppCompatActivity {
                 null,
                 null);
 
-        List<InventoryItem> inventoryItems = new ArrayList<>();
+        itemListView = (ListView) findViewById(R.id.inventory_list);
 
-        try {
-            //Figure out the index of each column
-            int idColumnIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME);
-            int priceColumnIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE);
-            int quantityColumnIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY);
-
-            //Iterate through all the returned rows in the cursor
-            while (cursor.moveToNext()) {
-                //Use the index to extract the String or Int value at the current row the cursor is on.
-                int currentID = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                int currentPrice = cursor.getInt(priceColumnIndex);
-                int currentQuantity = cursor.getInt(quantityColumnIndex);
-                inventoryItems.add(new InventoryItem(currentName, currentPrice, currentQuantity));
-
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                cursorAdapter = new InventoryCursorAdapter(
+                        InventoryActivity.this,
+                        cursor);
+                itemListView.setAdapter(cursorAdapter);
             }
-        }
-        finally {
-            cursor.close();
-        }
-
+        });
     }
 
     public void insertItem() {

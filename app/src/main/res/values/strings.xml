@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">InventoryTracker</string>
+    <string name="empty_text">BLAH BLAH BLAH</string>
 </resources>
