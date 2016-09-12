@@ -41,6 +41,8 @@ public class InventoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inventory_list);
 
+        mDbhelper = new InventoryDbHelper(this);
+
         itemListView = (ListView) findViewById(R.id.inventory_list);
 
         //Set the TextView with id empty to an empty view.
@@ -49,6 +51,7 @@ public class InventoryActivity extends AppCompatActivity {
 
         //SALE button displayed in InventoryActivity
         saleButton = (Button) findViewById(R.id.sale_button);
+
 
         //Setup FAB to open editorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -60,33 +63,17 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
 
-//        saleButton.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//                View parentRow = (View) v.getParent();
-//                final int position = itemListView.getPositionForView(parentRow);
-//                saleUpdate(position);
-//            }
-//        });
-
         //Setup onClickListener for when an item is clicked
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
-                long viewId = view.getId();
-                if (viewId == R.id.sale_button) {
-                    Toast.makeText(InventoryActivity.this, "uhhh", Toast.LENGTH_SHORT).show();
-
-                    saleUpdate(position);
-                } else {
-                    Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
-                    editIntent.putExtra("item_id", position);
-                    startActivity(editIntent);
+                Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
+                Toast.makeText(InventoryActivity.this, String.valueOf(l), Toast.LENGTH_SHORT).show();
+                editIntent.putExtra("item_id", l);
+                startActivity(editIntent);
                 }
-            }
-        });
 
-        mDbhelper = new InventoryDbHelper(this);
+        });
         displayDatabaseInfo();
     }
 
@@ -124,7 +111,7 @@ public class InventoryActivity extends AppCompatActivity {
         });
     }
     private void saleUpdate(int position) {
-        Toast.makeText(InventoryActivity.this, position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(InventoryActivity.this, position, Toast.LENGTH_LONG).show();
 
 
 
