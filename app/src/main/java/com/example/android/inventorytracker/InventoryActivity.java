@@ -25,7 +25,6 @@ public class InventoryActivity extends AppCompatActivity {
     //Cursor that iterates through table
     private Cursor cursor;
 
-    //Dbhelper
     private InventoryDbHelper mDbhelper;
 
     //ListView for the list of items
@@ -51,7 +50,6 @@ public class InventoryActivity extends AppCompatActivity {
 
         //SALE button displayed in InventoryActivity
         saleButton = (Button) findViewById(R.id.sale_button);
-
 
         //Setup FAB to open editorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -110,13 +108,4 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
     }
-    private void saleUpdate(int position) {
-        Toast.makeText(InventoryActivity.this, position, Toast.LENGTH_LONG).show();
-
-
-
-
-    }
-
-
 }
