@@ -1,8 +1,12 @@
 package com.example.android.inventorytracker;
 
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +35,13 @@ public class EditorActivity extends AppCompatActivity {
     EditText quantityEdit;
     EditText addQuantityEdit;
 
-    String id;
+    InventoryDbHelper mDbHelper;
+
+    long itemId;
+
+    Intent returnIntent;
+
+    AlertDialog.Builder builder;
 
 
     @Override
@@ -56,7 +66,12 @@ public class EditorActivity extends AppCompatActivity {
         quantityEdit = (EditText) findViewById(R.id.editQuantityText);
         addQuantityEdit = (EditText) findViewById(R.id.editQuantityAddText);
 
-        displayDatabaseInfo();
+        itemId = getIntent().getLongExtra("item_id", 0);
+        createConfirm();
+
+        returnIntent = new Intent(EditorActivity.this, InventoryActivity.class);
+
+        displayDatabaseInfo(itemId);
     }
 
     // Adds onClickListener to confirm and cancel buttons.
@@ -65,13 +80,14 @@ public class EditorActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.update_button:
-                    updateItem();
+                    updateItem(itemId);
                     break;
                 case R.id.order_button:
                     orderItem();
                     break;
                 case R.id.delete_button:
-                    deleteItem();
+                    builder.create();
+                    builder.show();
                     break;
                 case R.id.editIncrementButton:
                     incrementQuantity();
@@ -83,35 +99,86 @@ public class EditorActivity extends AppCompatActivity {
         }
     };
 
-    private void displayDatabaseInfo() {
+    private void displayDatabaseInfo(long rowId) {
         mDbhelper = new InventoryDbHelper(this);
-
         SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        String filter = "_ID=" + rowId;
+        String[] columns = {InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY};
 
-        cursor = db.query(InventoryContract.InventoryEntry.TABLE_NAME,
-                new String[] {InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME},
-                InventoryContract.InventoryEntry._ID,
-                new String [] { getIntent().getStringExtra("item_id") },
-                null,
-                null,
-                null);
+        cursor = db.query(InventoryContract.InventoryEntry.TABLE_NAME, columns, filter, null, null, null, null);
 
+        if (cursor.moveToFirst()) {
+            int itemNameIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME);
+            String itemNameQuery = cursor.getString(itemNameIndex);
+            nameEdit.setText(itemNameQuery);
 
+            int itemPriceIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE);
+            String itemPriceQuery = cursor.getString(itemPriceIndex);
+            priceEdit.setText(itemPriceQuery);
+
+            int itemQuantityIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY);
+            String itemQuantityQuery = cursor.getString(itemQuantityIndex);
+            quantityEdit.setText(itemQuantityQuery);
+
+        }
     }
 
-    private void updateItem() {
+    private void updateItem(long rowId) {
+        mDbhelper = new InventoryDbHelper(this);
+        SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        String filter = "_ID=" + rowId;
+
+        String itemNameUpdate = nameEdit.getText().toString();
+        int itemPriceUpdate = Integer.valueOf(priceEdit.getText().toString());
+        int itemQuantityUpdate = Integer.valueOf(quantityEdit.getText().toString());
+
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME, itemNameUpdate);
+        updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE, itemPriceUpdate);
+        updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, itemQuantityUpdate);
+
+        db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
+        db.close();
+        startActivity(returnIntent);
 
     }
     private void orderItem() {
 
     }
-    private void deleteItem() {
-
+    private void deleteItem(long rowId) {
+        mDbhelper = new InventoryDbHelper(this);
+        SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        db.delete(InventoryContract.InventoryEntry.TABLE_NAME, "_ID" + "=" + rowId, null);
+        db.close();
+        startActivity(returnIntent);
     }
     private void incrementQuantity() {
 
     }
     private void decrementQuantity() {
+
+    }
+
+    private void createConfirm() {
+        // Initializes alert dialog box. If yes, calls deleteItem method.
+        builder = new AlertDialog.Builder(EditorActivity.this);
+        builder.setTitle("Confirm");
+        builder.setMessage("Are you sure you want to delete this item?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteItem(itemId);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
 
     }
 }

@@ -5,10 +5,8 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.inventorytracker.Data.InventoryContract;
 import com.example.android.inventorytracker.Data.InventoryDbHelper;
@@ -40,21 +38,11 @@ public class InventoryCursorAdapter extends CursorAdapter {
         int pos = cursor.getPosition();
         mDBHelper = new InventoryDbHelper(context);
         TextView itemName = (TextView) view.findViewById(R.id.item_name);
-        itemName.setTag(pos + 1);
+//        itemName.setTag(pos + 1);
         TextView itemPrice = (TextView) view.findViewById(R.id.item_price);
-        itemName.setTag(pos + 1);
+//        itemName.setTag(pos + 1);
         TextView itemQuantity = (TextView) view.findViewById(R.id.item_quantity);
-        itemQuantity.setTag(pos + 1);
-        Button saleButton = (Button) view.findViewById(R.id.sale_button);
-        saleButton.setTag(pos + 1);
-        saleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view != null) {
-                    Toast.makeText(context, String.valueOf(view.getTag()), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        itemQuantity.setTag(pos + 1);
 
         String name = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME));
         String price = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE));
@@ -64,4 +52,10 @@ public class InventoryCursorAdapter extends CursorAdapter {
         itemPrice.setText(price);
         itemQuantity.setText(quantity);
     }
+
+    public void setOnClickSaleListener(final View.OnClickListener onClickListener) {
+        this.onClickSaleListener = onClickListener;
+    }
+
+
 }

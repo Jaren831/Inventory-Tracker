@@ -40,7 +40,7 @@ public class NewItemActivity extends AppCompatActivity{
         // Initializes alert dialog box.
         builder = new AlertDialog.Builder(NewItemActivity.this);
         builder.setTitle("Input Error");
-        builder.setMessage("No input field can be blank. Press cancel to cancel.");
+        builder.setMessage("No input field can be blank.");
         builder.setCancelable(false);
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -97,6 +97,7 @@ public class NewItemActivity extends AppCompatActivity{
             AlertDialog error = builder.create();
             error.show();
         }
+        db.close();
     }
 
     // Method to return to InventoryActivity and not save inputs if cancel button is pressed.

@@ -24,14 +24,14 @@
         android:layout_weight="1"
         android:ellipsize="end"/>
     <TextView
-        android:id="@+id/item_quantity"
+        android:id="@+id/item_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
         android:textSize="18sp" />
     <TextView
-        android:id="@+id/item_price"
+        android:id="@+id/item_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -43,7 +43,6 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:focusable="false"
         android:textSize="12sp"
         android:text="SALE" />
         <!--android:focusable="false"-->
