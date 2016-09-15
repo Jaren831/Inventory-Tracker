@@ -42,6 +42,7 @@ public class EditorActivity extends AppCompatActivity {
     Intent returnIntent;
 
     AlertDialog.Builder builder;
+    Intent emailIntent;
 
 
     @Override
@@ -68,9 +69,7 @@ public class EditorActivity extends AppCompatActivity {
 
         itemId = getIntent().getLongExtra("item_id", 0);
         createConfirm();
-
         returnIntent = new Intent(EditorActivity.this, InventoryActivity.class);
-
         displayDatabaseInfo(itemId);
     }
 
@@ -83,17 +82,19 @@ public class EditorActivity extends AppCompatActivity {
                     updateItem(itemId);
                     break;
                 case R.id.order_button:
-                    orderItem();
+                    orderItem(itemId);
                     break;
                 case R.id.delete_button:
-                    builder.create();
                     builder.show();
                     break;
                 case R.id.editIncrementButton:
-                    incrementQuantity();
+                    incrementQuantity(itemId);
                     break;
                 case R.id.editDecrementButton:
-                    decrementQuantity();
+                    int currentQuantity = Integer.parseInt(quantityEdit.getText().toString());
+                    if (currentQuantity > 0){
+                        decrementQuantity(itemId);
+                    }
                     break;
             }
         }
@@ -123,6 +124,7 @@ public class EditorActivity extends AppCompatActivity {
             quantityEdit.setText(itemQuantityQuery);
 
         }
+        db.close();
     }
 
     private void updateItem(long rowId) {
@@ -142,10 +144,32 @@ public class EditorActivity extends AppCompatActivity {
         db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
         db.close();
         startActivity(returnIntent);
-
     }
-    private void orderItem() {
+    private void orderItem(long rowId) {
+        mDbhelper = new InventoryDbHelper(this);
+        SQLiteDatabase db = mDbhelper.getReadableDatabase();
+        String filter = "_ID=" + rowId;
+        String[] columns = {InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY};
+        cursor = db.query(InventoryContract.InventoryEntry.TABLE_NAME, columns, filter, null, null, null, null);
 
+        if (cursor.moveToFirst()) {
+            int itemNameIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME);
+            String itemNameQuery = cursor.getString(itemNameIndex);
+            nameEdit.setText(itemNameQuery);
+
+            int itemQuantityIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY);
+            String itemQuantityQuery = cursor.getString(itemQuantityIndex);
+            quantityEdit.setText(itemQuantityQuery);
+
+            emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("plain/text");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {});
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Ordering more " + itemNameQuery);
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Current stock: " + itemQuantityQuery);
+            startActivity(emailIntent);
+        }
+        db.close();
     }
     private void deleteItem(long rowId) {
         mDbhelper = new InventoryDbHelper(this);
@@ -154,13 +178,35 @@ public class EditorActivity extends AppCompatActivity {
         db.close();
         startActivity(returnIntent);
     }
-    private void incrementQuantity() {
+    private void incrementQuantity(long rowId) {
+        mDbhelper = new InventoryDbHelper(this);
+        SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        String filter = "_ID=" + rowId;
+        int currentQuantity = Integer.parseInt(quantityEdit.getText().toString());
+        int currentAddQuantity = Integer.parseInt(addQuantityEdit.getText().toString());
+        int newQuantity = currentQuantity + currentAddQuantity;
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, newQuantity);
+        db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
+        displayDatabaseInfo(rowId);
 
     }
-    private void decrementQuantity() {
+    private void decrementQuantity(long rowId) {
+        mDbhelper = new InventoryDbHelper(this);
+        SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        String filter = "_ID=" + rowId;
+        int currentQuantity = Integer.parseInt(quantityEdit.getText().toString());
+        int currentAddQuantity = Integer.parseInt(addQuantityEdit.getText().toString());
+        int newQuantity = 0;
+        if ((currentQuantity - currentAddQuantity) >= 0) {
+            newQuantity = (currentQuantity - currentAddQuantity);
+        }
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, newQuantity);
+        db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
+        displayDatabaseInfo(rowId);
 
     }
-
     private void createConfirm() {
         // Initializes alert dialog box. If yes, calls deleteItem method.
         builder = new AlertDialog.Builder(EditorActivity.this);
@@ -179,6 +225,6 @@ public class EditorActivity extends AppCompatActivity {
                 dialogInterface.cancel();
             }
         });
-
+        builder.create();
     }
 }

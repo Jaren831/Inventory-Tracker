@@ -9,9 +9,7 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,7 +32,6 @@ public class InventoryActivity extends AppCompatActivity {
     //Empty TextView if nothing to show
     TextView emptyTextView;
 
-    Button saleButton;
     FloatingActionButton fab;
 
     @Override
@@ -49,10 +46,6 @@ public class InventoryActivity extends AppCompatActivity {
         //Set the TextView with id empty to an empty view.
         emptyTextView = (TextView) findViewById(R.id.empty);
         itemListView.setEmptyView(emptyTextView);
-
-        //SALE button displayed in InventoryActivity
-        saleButton = (Button) ViewParent.findViewById(R.id.sale_button);
-        saleButton.setOnClickListener(onClickListener);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(onClickListener);

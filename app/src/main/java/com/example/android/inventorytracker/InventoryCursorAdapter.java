@@ -1,10 +1,13 @@
 package com.example.android.inventorytracker;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
@@ -18,14 +21,16 @@ public class InventoryCursorAdapter extends CursorAdapter {
 
     private LayoutInflater cursorInflater;
 
-    private InventoryDbHelper mDBHelper;
+    InventoryDbHelper mDbHelper;
+
+    Button saleButton;
 
     public InventoryCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         cursorInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    //    // The newView method is used to inflate a new view and return it.
+    //The newView method is used to inflate a new view and return it.
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return cursorInflater.inflate(R.layout.list_item, parent, false);
     }
@@ -34,28 +39,40 @@ public class InventoryCursorAdapter extends CursorAdapter {
     // such as setting the text on a TextView
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
+        saleButton = (Button) view.findViewById(R.id.sale_button);
+
         // Find fields to populate in inflated template
-        int pos = cursor.getPosition();
-        mDBHelper = new InventoryDbHelper(context);
         TextView itemName = (TextView) view.findViewById(R.id.item_name);
-//        itemName.setTag(pos + 1);
         TextView itemPrice = (TextView) view.findViewById(R.id.item_price);
-//        itemName.setTag(pos + 1);
-        TextView itemQuantity = (TextView) view.findViewById(R.id.item_quantity);
-//        itemQuantity.setTag(pos + 1);
+        final TextView itemQuantity = (TextView) view.findViewById(R.id.item_quantity);
 
         String name = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME));
         String price = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE));
-        String quantity = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY));
+        final String quantity = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY));
 
         itemName.setText(name);
         itemPrice.setText(price);
         itemQuantity.setText(quantity);
-    }
 
-    public void setOnClickSaleListener(final View.OnClickListener onClickListener) {
-        this.onClickSaleListener = onClickListener;
-    }
+        saleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDbHelper = new InventoryDbHelper(context);
+                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                String rowId = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry._ID));
+                String filter = "_ID=" + rowId;
+                int saleCurrentQuantity = Integer.parseInt(quantity);
+                if (saleCurrentQuantity > 0) {
+                    int saleNewQuantity = saleCurrentQuantity - 1;
+                    ContentValues updateValues = new ContentValues();
+                    updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, saleNewQuantity);
+                    db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
+                    notifyDataSetInvalidated();
+                }
+                db.close();
+            }
+        });
 
+    }
 
 }
