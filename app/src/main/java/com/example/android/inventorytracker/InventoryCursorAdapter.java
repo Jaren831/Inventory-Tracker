@@ -26,7 +26,8 @@ public class InventoryCursorAdapter extends CursorAdapter {
 
     Button saleButton;
 
-    TextView quantitySale;
+    InventoryCursorAdapter cursorAdapter;
+
 
     public InventoryCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
@@ -36,37 +37,13 @@ public class InventoryCursorAdapter extends CursorAdapter {
     //    // The newView method is used to inflate a new view and return it.
     @Override
     public View newView(final Context context, Cursor cursor, final ViewGroup parent) {
-        View row = cursorInflater.inflate(R.layout.list_item, parent, false);
-        saleButton = (Button) row.findViewById(R.id.sale_button);
-        saleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDbHelper = new InventoryDbHelper(context);
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-                String filter = "_ID=" + saleButton.getTag();
-                quantitySale = (TextView) parent.findViewById(R.id.item_quantity);
-                int itemQuantity = Integer.valueOf(quantitySale.getText().toString());
-                int itemQuantityUpdate = itemQuantity - 1;
-
-                ContentValues updateValues = new ContentValues();
-                updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, itemQuantityUpdate);
-
-                db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
-
-//
-//
-                Toast.makeText(context, String.valueOf(updateValues), Toast.LENGTH_SHORT).show();
-//                db.close();
-            }
-        });
-        return row;
+        return cursorInflater.inflate(R.layout.list_item, parent, false);
     }
 
     // The bindView method is used to bind all data to a given view
     // such as setting the text on a TextView
     @Override
-    public void bindView(View view, final Context context, final Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
         int pos = cursor.getPosition();
         saleButton = (Button) view.findViewById(R.id.sale_button);
 
@@ -77,7 +54,7 @@ public class InventoryCursorAdapter extends CursorAdapter {
 
         String name = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME));
         String price = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE));
-        final String quantity = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY));
+        String quantity = cursor.getString(cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY));
         itemQuantity.setTag(pos + 1);
 
         itemName.setText(name);
@@ -87,20 +64,22 @@ public class InventoryCursorAdapter extends CursorAdapter {
         saleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDbHelper = new InventoryDbHelper(context);
-                SQLiteDatabase db = mDbHelper.getWritableDatabase();
                 long rowId = Long.valueOf(itemQuantity.getTag().toString());
                 String filter = "_ID=" + rowId;
                 int saleCurrentQuantity = Integer.valueOf(itemQuantity.getText().toString());
                 if (saleCurrentQuantity > 0) {
+                    mDbHelper = new InventoryDbHelper(context);
+                    SQLiteDatabase db = mDbHelper.getWritableDatabase();
                     int saleNewQuantity = saleCurrentQuantity - 1;
                     ContentValues updateValues = new ContentValues();
                     updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, saleNewQuantity);
                     db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
                     itemQuantity.setText(String.valueOf(saleNewQuantity));
+                    db.close();
+
                 }
                 Toast.makeText(context, String.valueOf(rowId), Toast.LENGTH_SHORT).show();
-                db.close();
+
             }
         });
 

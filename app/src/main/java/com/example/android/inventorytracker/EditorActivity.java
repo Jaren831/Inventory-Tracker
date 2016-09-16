@@ -102,7 +102,7 @@ public class EditorActivity extends AppCompatActivity {
 
     private void displayDatabaseInfo(long rowId) {
         mDbhelper = new InventoryDbHelper(this);
-        SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        SQLiteDatabase db = mDbhelper.getReadableDatabase();
         String filter = "_ID=" + rowId;
         String[] columns = {InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
                 InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE,
