@@ -1,6 +1,5 @@
 package com.example.android.inventorytracker;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -55,11 +54,9 @@ public class InventoryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                 Intent editIntent = new Intent(InventoryActivity.this, EditorActivity.class);
-//                Toast.makeText(InventoryActivity.this, String.valueOf(l), Toast.LENGTH_SHORT).show();
                 editIntent.putExtra("item_id", l);
                 startActivity(editIntent);
                 }
-
         });
         displayDatabaseInfo();
     }
@@ -69,9 +66,6 @@ public class InventoryActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.sale_button:
-                    saleButton(itemListView.getPositionForView(view));
-                    break;
                 case R.id.fab:
                     Intent newItemIntent = new Intent(InventoryActivity.this, NewItemActivity.class);
                     startActivity(newItemIntent);
@@ -90,6 +84,7 @@ public class InventoryActivity extends AppCompatActivity {
             InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
             InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE,
             InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY
+//            InventoryContract.InventoryEntry.COLUMN_PRODUCT_IMAGE
         };
 
         cursor = db.query(
@@ -112,18 +107,5 @@ public class InventoryActivity extends AppCompatActivity {
                 itemListView.setAdapter(cursorAdapter);
             }
         });
-    }
-
-    private void saleButton(long l) {
-        mDbhelper = new InventoryDbHelper(this);
-        SQLiteDatabase db = mDbhelper.getWritableDatabase();
-        String filter = "_ID=" + l;
-
-        ContentValues updateValues = new ContentValues();
-        updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, "quantity = quantity - 1");
-
-        db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
-        db.close();
-        displayDatabaseInfo();
     }
 }
