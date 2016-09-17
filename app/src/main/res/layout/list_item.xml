@@ -5,42 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <ImageView
-            android:id="@+id/item_image"
-            style="@style/imageStyle"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/item_name"
-            style="@style/TextStyle"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/item_price"
-            style="@style/TextStyle"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/item_quantity"
-            style="@style/TextStyle"/>
-    </LinearLayout>
-
+    <ImageView
+        android:id="@+id/item_image"
+        style="@style/imageStyle"/>
+    <TextView
+        android:id="@+id/item_name"
+        style="@style/TextStyle"/>
+    <TextView
+        android:id="@+id/item_price"
+        style="@style/TextStyle"/>
+    <TextView
+        android:id="@+id/item_quantity"
+        style="@style/TextStyle"/>
     <Button
         android:id="@+id/sale_button"
         style="@style/buttonStyle"
