@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.inventorytracker.Data.InventoryContract;
 import com.example.android.inventorytracker.Data.InventoryDbHelper;
@@ -37,7 +36,7 @@ public class InventoryCursorAdapter extends CursorAdapter {
         cursorInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    //    // The newView method is used to inflate a new view and return it.
+    // The newView method is used to inflate a new view and return it.
     @Override
     public View newView(final Context context, Cursor cursor, final ViewGroup parent) {
         return cursorInflater.inflate(R.layout.list_item, parent, false);
@@ -47,7 +46,6 @@ public class InventoryCursorAdapter extends CursorAdapter {
     // such as setting the text on a TextView
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        int pos = cursor.getPosition();
         saleButton = (Button) view.findViewById(R.id.sale_button);
 
         // Find fields to populate in inflated template
@@ -84,10 +82,7 @@ public class InventoryCursorAdapter extends CursorAdapter {
                     db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
                     itemQuantity.setText(String.valueOf(saleNewQuantity));
                     db.close();
-
                 }
-                Toast.makeText(context, String.valueOf(rowId), Toast.LENGTH_SHORT).show();
-
             }
         });
 

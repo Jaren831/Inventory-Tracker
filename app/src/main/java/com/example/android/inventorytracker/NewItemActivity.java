@@ -13,7 +13,6 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -114,7 +113,6 @@ public class NewItemActivity extends AppCompatActivity{
             values.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, itemQuantityInput);
             values.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_IMAGE, bArray);
             long newRowId = db.insert(InventoryContract.InventoryEntry.TABLE_NAME, null, values);
-            Log.v("InventoryActivity", "New row ID " + newRowId);
             Intent returnIntent = new Intent(NewItemActivity.this, InventoryActivity.class);
             startActivity(returnIntent);
         } else {
