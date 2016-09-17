@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -112,9 +114,11 @@ public class EditorActivity extends AppCompatActivity {
         mDbhelper = new InventoryDbHelper(this);
         SQLiteDatabase db = mDbhelper.getReadableDatabase();
         String filter = "_ID=" + rowId;
-        String[] columns = {InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
+        String[] columns = {
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
                 InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE,
-                InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY};
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY,
+                InventoryContract.InventoryEntry.COLUMN_PRODUCT_IMAGE};
 
         cursor = db.query(InventoryContract.InventoryEntry.TABLE_NAME, columns, filter, null, null, null, null);
 
@@ -130,6 +134,12 @@ public class EditorActivity extends AppCompatActivity {
             int itemQuantityIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY);
             String itemQuantityQuery = cursor.getString(itemQuantityIndex);
             quantityEdit.setText(itemQuantityQuery);
+
+            int itemPictureIndex = cursor.getColumnIndex(InventoryContract.InventoryEntry.COLUMN_PRODUCT_IMAGE);
+            byte[] image = cursor.getBlob(itemPictureIndex);
+            Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+            imageButton.setImageBitmap(bmp);
+
 
         }
         db.close();

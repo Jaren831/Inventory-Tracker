@@ -1,4 +1,23 @@
 <resources>
-    <string name="app_name">InventoryTracker</string>
-    <string name="empty_text">BLAH BLAH BLAH</string>
+    <string name="app_name">Inventory Tracker</string>
+    <string name="empty_text">Welcome to Inventory Tracker! You\'re not tracking anything
+    yet, press the add item button to get started.</string>
+    <string name="sale_button">SALE</string>
+    <string name="Name">Name</string>
+    <string name="Price">Price</string>
+    <string name="Quantity">Quantity</string>
+    <string name="Picture">Picture</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Cancel">Cancel</string>
+    <string name="increment">+</string>
+    <string name="decrement">-</string>
+    <string name="defaultAdd">1</string>
+    <string name="update">update</string>
+    <string name="order">order</string>
+    <string name="delete">delete</string>
+
+
+
+
+
 </resources>

@@ -17,7 +17,7 @@
             android:layout_weight="2"
             android:maxLines="1"
             android:textSize="18sp"
-            android:text="Picture"/>
+            android:text="@string/Picture"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="18sp"
-            android:text="Name"/>
+            android:text="@string/Name"/>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="2"
@@ -35,7 +35,7 @@
             android:ellipsize="end"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="Price"/>
+            android:text="@string/Price"/>
         <TextView
             android:layout_width="0dp"
             android:gravity="center"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:textSize="18sp"
-            android:text="Quantity"/>
+            android:text="@string/Quantity"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -68,7 +68,8 @@
             android:inputType="textCapCharacters"
             android:maxLines="1"
             android:textSize="18sp"
-            android:hint="NAME"/>
+            android:textAllCaps="true"
+            android:hint="@string/Name"/>
         <EditText
             android:id="@+id/newPriceText"
             android:layout_width="0dp"
@@ -79,7 +80,8 @@
             android:inputType="numberDecimal"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:hint="PRICE"/>
+            android:textAllCaps="true"
+            android:hint="@string/Price"/>
         <EditText
             android:id="@+id/newQuantityText"
             android:layout_width="0dp"
@@ -90,7 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:textSize="18sp"
-            android:hint="QUANTITY"/>
+            android:textAllCaps="true"
+            android:hint="@string/Quantity"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -100,15 +103,11 @@
         android:layout_gravity="center">
         <Button
             android:id="@+id/confirmButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="CONFIRM"/>
+            style="@style/buttonStyle"
+            android:text="@string/Confirm"/>
         <Button
             android:id="@+id/cancelButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="CANCEL"/>
+            style="@style/buttonStyle"
+            android:text="@string/Cancel"/>
     </LinearLayout>
 </LinearLayout>

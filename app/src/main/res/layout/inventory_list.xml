@@ -10,7 +10,6 @@
         android:layout_margin="8dp"
         android:focusable="true">
     </ListView>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -26,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:layout_centerInParent="true"
         android:textAppearance="?android:textAppearanceMedium"/>
 
 </FrameLayout>
