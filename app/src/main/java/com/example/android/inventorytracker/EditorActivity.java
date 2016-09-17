@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.android.inventorytracker.Data.InventoryContract;
 import com.example.android.inventorytracker.Data.InventoryDbHelper;
@@ -29,6 +31,7 @@ public class EditorActivity extends AppCompatActivity {
     Button deleteButton;
     Button incrementQuantityButton;
     Button decrementQuantityButton;
+    ImageButton imageButton;
 
     EditText nameEdit;
     EditText priceEdit;
@@ -55,6 +58,7 @@ public class EditorActivity extends AppCompatActivity {
         deleteButton = (Button) findViewById(R.id.delete_button);
         incrementQuantityButton = (Button) findViewById(R.id.editIncrementButton);
         decrementQuantityButton = (Button) findViewById(R.id.editDecrementButton);
+        imageButton = (ImageButton) findViewById(R.id.editPictureText);
 
         updateButton.setOnClickListener(onClickListener);
         orderButton.setOnClickListener(onClickListener);
@@ -95,6 +99,9 @@ public class EditorActivity extends AppCompatActivity {
                     if (currentQuantity > 0){
                         decrementQuantity(itemId);
                     }
+                    break;
+                case R.id.editPictureText:
+                    editImage(itemId);
                     break;
             }
         }
@@ -226,5 +233,15 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
         builder.create();
+    }
+
+    private void editImage(long rowId) {
+        mDbhelper = new InventoryDbHelper(this);
+        SQLiteDatabase db = mDbhelper.getWritableDatabase();
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, 100);
+        Toast.makeText(EditorActivity.this, String.valueOf("uh"), Toast.LENGTH_SHORT).show();
+
     }
 }

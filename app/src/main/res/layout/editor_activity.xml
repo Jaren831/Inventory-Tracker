@@ -61,6 +61,7 @@
             android:layout_weight="2"
             android:maxLines="1"
             android:textSize="18sp"
+            android:src="@drawable/check"
             android:hint="PICTURE"/>
         <EditText
             android:id="@+id/editNameText"
