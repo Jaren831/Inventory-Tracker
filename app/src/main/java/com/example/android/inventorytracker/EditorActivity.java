@@ -58,13 +58,14 @@ public class EditorActivity extends AppCompatActivity {
         deleteButton = (Button) findViewById(R.id.delete_button);
         incrementQuantityButton = (Button) findViewById(R.id.editIncrementButton);
         decrementQuantityButton = (Button) findViewById(R.id.editDecrementButton);
-        imageButton = (ImageButton) findViewById(R.id.editPictureText);
+        imageButton = (ImageButton) findViewById(R.id.image_button);
 
         updateButton.setOnClickListener(onClickListener);
         orderButton.setOnClickListener(onClickListener);
         deleteButton.setOnClickListener(onClickListener);
         incrementQuantityButton.setOnClickListener(onClickListener);
         decrementQuantityButton.setOnClickListener(onClickListener);
+        imageButton.setOnClickListener(onClickListener);
 
         nameEdit = (EditText) findViewById(R.id.editNameText);
         priceEdit = (EditText) findViewById(R.id.editPriceText);
@@ -100,7 +101,7 @@ public class EditorActivity extends AppCompatActivity {
                         decrementQuantity(itemId);
                     }
                     break;
-                case R.id.editPictureText:
+                case R.id.image_button:
                     editImage(itemId);
                     break;
             }
@@ -195,8 +196,8 @@ public class EditorActivity extends AppCompatActivity {
         ContentValues updateValues = new ContentValues();
         updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, newQuantity);
         db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
+        db.close();
         displayDatabaseInfo(rowId);
-
     }
     private void decrementQuantity(long rowId) {
         mDbhelper = new InventoryDbHelper(this);
@@ -211,6 +212,7 @@ public class EditorActivity extends AppCompatActivity {
         ContentValues updateValues = new ContentValues();
         updateValues.put(InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY, newQuantity);
         db.update(InventoryContract.InventoryEntry.TABLE_NAME, updateValues, filter, null);
+        db.close();
         displayDatabaseInfo(rowId);
 
     }
@@ -238,10 +240,10 @@ public class EditorActivity extends AppCompatActivity {
     private void editImage(long rowId) {
         mDbhelper = new InventoryDbHelper(this);
         SQLiteDatabase db = mDbhelper.getWritableDatabase();
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, 100);
+        Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        imageIntent.setType("image/*");
+        startActivityForResult(imageIntent, 0);
         Toast.makeText(EditorActivity.this, String.valueOf("uh"), Toast.LENGTH_SHORT).show();
-
+        db.close();
     }
 }

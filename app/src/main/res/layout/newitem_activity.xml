@@ -52,12 +52,12 @@
         android:orientation="horizontal"
         android:layout_margin="8dp">
         <ImageButton
-            android:id="@+id/newPicture"
+            android:id="@+id/pictureButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="2"
-            android:maxLines="1"/>
+            android:src="@drawable/plus"/>
         <EditText
             android:id="@+id/newNameText"
             android:layout_width="0dp"

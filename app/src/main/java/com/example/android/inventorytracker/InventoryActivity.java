@@ -83,8 +83,8 @@ public class InventoryActivity extends AppCompatActivity {
             InventoryContract.InventoryEntry._ID,
             InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME,
             InventoryContract.InventoryEntry.COLUMN_PRODUCT_PRICE,
-            InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY
-//            InventoryContract.InventoryEntry.COLUMN_PRODUCT_IMAGE
+            InventoryContract.InventoryEntry.COLUMN_PRODUCT_QUANTITY,
+            InventoryContract.InventoryEntry.COLUMN_PRODUCT_IMAGE
         };
 
         cursor = db.query(
